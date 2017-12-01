@@ -2,20 +2,44 @@ package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
 import br.ufsc.exception.PotNotEmptyException;
+import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 class Pot {
     private String name;
     private int coins = 0;
 
-    private Queue<Dog> sleepingDogs;
     private ArrayList<Pot> relatedPots;
+    private LinkedBlockingQueue<Dog> sleepingDogs;
 
     Pot(String s) {
         name = s;
+
         relatedPots = new ArrayList<>();
+        sleepingDogs = new LinkedBlockingQueue<>();
+    }
+
+    synchronized void transferCoinsToDog(Dog d) throws EmptyPotException, PotQueueViolationException {
+        if (!sleepingDogs.contains(d)) {
+            sleepingDogs.add(d);
+        }
+
+        if(!sleepingDogs.isEmpty() && !sleepingDogs.peek().equals(d)) {
+            throw new PotQueueViolationException();
+        }
+
+        if(coins == 0) {
+            throw new EmptyPotException();
+        }
+
+        int transferredCoins = Integer.min(d.remainingCoinsCapacity(), coins);
+        d.addCoins(transferredCoins);
+        coins -= transferredCoins;
+        sleepingDogs.remove();
+
+        System.out.printf("%s - Adding %d coins to the dog, %d remaining.\n", d.getOwner().getTeam(), transferredCoins, coins);
     }
 
     synchronized void incrementCoin() throws PotNotEmptyException {
@@ -24,19 +48,11 @@ class Pot {
         }
 
         coins++;
-        wakeUpSleepingDogs();
-    }
 
-    synchronized void transferCoinsToDog(Dog d) throws EmptyPotException {
-        if(coins == 0) {
-            throw new EmptyPotException();
+        for(Dog d: sleepingDogs) {
+            System.out.printf("Trying to wake up the dog %s.\n", d.getName());
+            d.interrupt();
         }
-
-        int transferredCoins = Integer.min(d.remainingCoinsCapacity(), coins);
-        d.addCoins(transferredCoins);
-        coins -= transferredCoins;
-
-        System.out.printf("%s - Adding %d coins to the dog, %d remaining.\n", d.getOwner().getTeam(), transferredCoins, coins);
     }
 
     void addRelatedPot(Pot p) {
@@ -49,9 +65,5 @@ class Pot {
 
     String getName() {
         return name;
-    }
-
-    private void wakeUpSleepingDogs() {
-
     }
 }

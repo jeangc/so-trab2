@@ -1,6 +1,7 @@
 package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
+import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -46,11 +47,10 @@ class Dog extends Thread {
             }
 
             goToNextPot();
-        } catch (EmptyPotException e) {
+        } catch (PotQueueViolationException | EmptyPotException e) {
             waitForCoins();
         }
 
-        // TODO add exception to handle another dog in the queue
         takePotCoins();
     }
 
@@ -78,7 +78,6 @@ class Dog extends Thread {
     private void waitForCoins() {
         System.out.printf("%s - Pot without coins, going sleep.\n", owner.getTeam());
 
-        // TODO add te dog to the pot sleeping dogs list
         takeSomeTime(60);
     }
 
@@ -86,7 +85,7 @@ class Dog extends Thread {
         try {
             sleep(i * Config.TIME_UNIT_MILLISECONDS);
         } catch (InterruptedException e) {
-            System.out.println("The dog died asleep. Sad.");
+            System.out.println("Who dares waking me??");
         }
     }
 }
