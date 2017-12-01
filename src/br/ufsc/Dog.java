@@ -7,7 +7,6 @@ class Dog extends Thread {
     private Hunter owner;
     private Pot currentPot;
 
-
     void goToNextPot()
     {
 
@@ -22,7 +21,11 @@ class Dog extends Thread {
     void takePotCoins()
     {
         try {
-            currentPot.letDogTakeCoins(this);
+            currentPot.transferCoinsToDog(this);
+
+            if (isFullOfCoins()) {
+                deliverCoinsToOwner();
+            }
         } catch (EmptyPotException e) {
             waitForCoins();
             takePotCoins();
