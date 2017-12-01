@@ -7,6 +7,10 @@ class Forest {
         this.pots = pots;
     }
 
+    public Pot[] getPots() {
+        return pots;
+    }
+
     Pot getFirstPot() {
         return pots[0];
     }

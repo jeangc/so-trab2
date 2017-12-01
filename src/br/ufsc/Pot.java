@@ -1,6 +1,7 @@
 package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
+import br.ufsc.exception.PotNotEmptyException;
 
 import java.util.ArrayList;
 import java.util.Queue;
@@ -12,10 +13,18 @@ class Pot {
     private Queue<Dog> sleepingDogs;
     private ArrayList<Pot> relatedPots;
 
-    Pot(String s, int c) {
+    Pot(String s) {
         name = s;
-        coins = c;
         relatedPots = new ArrayList<>();
+    }
+
+    synchronized void incrementCoin() throws PotNotEmptyException {
+        if (coins > 0) {
+            throw new PotNotEmptyException();
+        }
+
+        coins++;
+        wakeUpSleepingDogs();
     }
 
     synchronized void transferCoinsToDog(Dog d) throws EmptyPotException {
@@ -40,5 +49,9 @@ class Pot {
 
     String getName() {
         return name;
+    }
+
+    private void wakeUpSleepingDogs() {
+
     }
 }
