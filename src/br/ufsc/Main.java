@@ -15,7 +15,7 @@ public class Main {
                         while (true) {
                             System.out.printf("Cachorro %s do time %s\n", this.getName(), t);
 
-                            this.waitForCoins();
+//                            this.takePotCoins();
 
                             if (++j == 3) {
                                 executorService.submit(this);

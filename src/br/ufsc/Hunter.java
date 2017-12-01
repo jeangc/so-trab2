@@ -1,9 +1,9 @@
 package br.ufsc;
 
 class Hunter {
-    private int coins;
+    private int coins = 0;
 
-    void receiveDogCoins(Dog d) {
-
+    synchronized void addCoins(int c) {
+        coins += c;
     }
 }
