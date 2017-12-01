@@ -1,6 +1,7 @@
 package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
+import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,12 +16,6 @@ class Dog extends Thread {
         owner = h;
     }
 
-    void goSearchForCoins(Forest f) {
-        System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
-        currentPot = f.getFirstPot();
-        takePotCoins();
-    }
-
     int remainingCoinsCapacity() {
         return Config.MAXIMUM_DOG_COINS - coins;
     }
@@ -31,6 +26,13 @@ class Dog extends Thread {
 
     Hunter getOwner() {
         return owner;
+    }
+
+    void goSearchForCoins(Forest f) {
+        System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
+
+        currentPot = f.getFirstPot();
+        takePotCoins();
     }
 
     private void takePotCoins() {
@@ -46,11 +48,10 @@ class Dog extends Thread {
             }
 
             goToNextPot();
-        } catch (EmptyPotException e) {
+        } catch (PotQueueViolationException | EmptyPotException e) {
             waitForCoins();
         }
 
-        // TODO add exception to handle another dog in the queue
         takePotCoins();
     }
 
@@ -66,7 +67,7 @@ class Dog extends Thread {
     }
 
     private void goToNextPot() {
-        System.out.printf("%s - Going to the next pot.\n", owner.getTeam());
+        System.out.printf("%s - Going to the next pot in 1 unit.\n", owner.getTeam());
 
         takeSomeTime(1);
 
@@ -76,9 +77,8 @@ class Dog extends Thread {
     }
 
     private void waitForCoins() {
-        System.out.printf("%s - Pot without coins, going sleep.\n", owner.getTeam());
+        System.out.printf("%s - Pot without coins, going sleep for 60 units.\n", owner.getTeam());
 
-        // TODO add te dog to the pot sleeping dogs list
         takeSomeTime(60);
     }
 
@@ -86,7 +86,7 @@ class Dog extends Thread {
         try {
             sleep(i * Config.TIME_UNIT_MILLISECONDS);
         } catch (InterruptedException e) {
-            System.out.println("The dog died asleep. Sad.");
+            System.out.println("Who dares waking me??");
         }
     }
 }

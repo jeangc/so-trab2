@@ -7,7 +7,7 @@ class Forest {
         this.pots = pots;
     }
 
-    public Pot[] getPots() {
+    Pot[] getPots() {
         return pots;
     }
 

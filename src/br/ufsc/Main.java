@@ -16,7 +16,7 @@ public class Main {
             ExecutorService executorService = Executors.newFixedThreadPool(Config.MAXIMUM_PARALLEL_DOGS);
 
             for (int i = 0; i < Config.DOGS_PER_TEAM; i++) {
-                executorService.execute(new Dog(h) {
+                executorService.submit(new Dog(h) {
                     public void run() {
                         goSearchForCoins(f);
                         executorService.submit(this);
@@ -34,6 +34,7 @@ public class Main {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         scheduledExecutorService.scheduleAtFixedRate(redDog,0, 2 * Config.TIME_UNIT_MILLISECONDS, TimeUnit.MILLISECONDS);
 
-        // TODO fila de cachorros dormindo no pote
+        // TODO parar quando alguém ganha
+        // TODO acordar os cachorros quando botar moeda
     }
 }
