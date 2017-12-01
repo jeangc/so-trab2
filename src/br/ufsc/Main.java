@@ -4,29 +4,34 @@ import java.util.concurrent.*;
 
 
 public class Main {
+    private static final String[] TEAMS = {"Amarelo", "Verde", "Azul"};
+    private static final int DOGS_PER_TEAM = 2;
+    private static final int MAXIMUM_PARALLEL_DOGS = 1;
 
     public static void main(String[] args) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        for(String t: TEAMS){
+            ExecutorService executorService = Executors.newFixedThreadPool(MAXIMUM_PARALLEL_DOGS);
 
-        for (int i=0; i<2; i++) {
-            executorService.execute(new Thread() {
-                public void run() {
-                    int j = 0;
-                    try {
-                        while(true) {
-                            System.out.printf("Asynchronous task %s\n", this.getName());
-                            sleep(1000);
+            for (int i = 0; i < DOGS_PER_TEAM; i++) {
+                executorService.execute(new Thread() {
+                    public void run() {
+                        int j = 0;
+                        try {
+                            while (true) {
+                                System.out.printf("Cachorro %s do time %s\n", this.getName(), t);
+                                sleep(2000);
 
-                            if (++j == 3) {
-                                executorService.submit(this);
-                                break;
+                                if (++j == 3) {
+                                    executorService.submit(this);
+                                    break;
+                                }
                             }
+                        } catch (InterruptedException e) {
+                            //
                         }
-                    } catch (InterruptedException e) {
-                        //
                     }
-                }
-            });
+                });
+            }
         }
     }
 }
