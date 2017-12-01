@@ -28,5 +28,6 @@ public class Main {
 
         // TODO cachorro vermelho
         // TODO fila de cachorros dormindo no pote
+        // TODO cachorro só pode pegar 20 moedas do pote
     }
 }

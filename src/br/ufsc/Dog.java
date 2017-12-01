@@ -21,6 +21,10 @@ class Dog extends Thread {
         takePotCoins();
     }
 
+    int remainingCoinsCapacity() {
+        return Config.MAXIMUM_DOG_COINS - coins;
+    }
+
     void addCoins(int c) {
         coins += c;
     }
@@ -32,7 +36,9 @@ class Dog extends Thread {
     private void takePotCoins() {
         try {
             System.out.printf("%s - Dog trying to take coins from the pot.\n", owner.getTeam());
+
             currentPot.transferCoinsToDog(this);
+            takeSomeTime(1);
 
             if (isFullOfCoins()) {
                 deliverCoinsToOwner();
@@ -41,10 +47,10 @@ class Dog extends Thread {
 
             goToNextPot();
         } catch (EmptyPotException e) {
-            System.out.printf("%s - Pot without coins, going sleep.\n", owner.getTeam());
             waitForCoins();
         }
 
+        // TODO add exception to handle another dog in the queue
         takePotCoins();
     }
 
@@ -62,16 +68,26 @@ class Dog extends Thread {
     private void goToNextPot() {
         System.out.printf("%s - Going to the next pot.\n", owner.getTeam());
 
+        takeSomeTime(1);
+
         Random r = new Random();
         ArrayList<Pot> relatedPots = currentPot.getRelatedPots();
         currentPot = relatedPots.get(r.nextInt(relatedPots.size()));
     }
 
     private void waitForCoins() {
+        System.out.printf("%s - Pot without coins, going sleep.\n", owner.getTeam());
+
+        // TODO add te dog to the pot sleeping dogs list
+        takeSomeTime(60);
+    }
+
+    private static void takeSomeTime(int i) {
         try {
-            sleep(60 * Config.TIME_UNIT_MILLISECONDS);
+            sleep(i * Config.TIME_UNIT_MILLISECONDS);
         } catch (InterruptedException e) {
             System.out.println("The dog died asleep. Sad.");
         }
+
     }
 }

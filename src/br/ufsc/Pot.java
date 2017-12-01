@@ -3,11 +3,12 @@ package br.ufsc;
 import br.ufsc.exception.EmptyPotException;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 class Pot {
     private int coins = 0;
 
-    private ArrayList<Dog> dogs;
+    private Queue<Dog> sleepingDogs;
     private ArrayList<Pot> relatedPots;
 
     Pot(int c) {
@@ -20,9 +21,11 @@ class Pot {
             throw new EmptyPotException();
         }
 
-        System.out.printf("%s - Adding %d coins to the dog.\n", d.getOwner().getTeam(), coins);
-        d.addCoins(coins);
-        coins = 0;
+        int transferredCoins = Integer.min(d.remainingCoinsCapacity(), coins);
+        d.addCoins(transferredCoins);
+        coins -= transferredCoins;
+
+        System.out.printf("%s - Adding %d coins to the dog, %d remaining.\n", d.getOwner().getTeam(), transferredCoins, coins);
     }
 
     void addRelatedPot(Pot p) {
