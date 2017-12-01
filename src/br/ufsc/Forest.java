@@ -1,5 +1,13 @@
 package br.ufsc;
 
-public class Forest {
+class Forest {
     private Pot[] pots;
+
+    Forest(Pot[] pots) {
+        this.pots = pots;
+    }
+
+    Pot getFirstPot() {
+        return pots[0];
+    }
 }

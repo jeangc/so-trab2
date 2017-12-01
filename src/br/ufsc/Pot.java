@@ -2,14 +2,17 @@ package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
 
+import java.util.ArrayList;
+
 class Pot {
     private int coins = 0;
 
-    private Dog[] dogs;
-    private Pot[] relatedPots;
+    private ArrayList<Dog> dogs;
+    private ArrayList<Pot> relatedPots;
 
-    public Pot(Pot[] p) {
-        relatedPots = p;
+    Pot(int c) {
+        coins = c;
+        relatedPots = new ArrayList<>();
     }
 
     synchronized void transferCoinsToDog(Dog d) throws EmptyPotException {
@@ -17,11 +20,16 @@ class Pot {
             throw new EmptyPotException();
         }
 
+        System.out.printf("%s - Adding %d coins to the dog.\n", d.getOwner().getTeam(), coins);
         d.addCoins(coins);
         coins = 0;
     }
 
-    Pot[] getRelatedPots() {
+    void addRelatedPot(Pot p) {
+        this.relatedPots.add(p);
+    }
+
+    ArrayList<Pot> getRelatedPots() {
         return relatedPots;
     }
 }
