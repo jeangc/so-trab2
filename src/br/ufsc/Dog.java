@@ -5,36 +5,81 @@ import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Callable;
 
-class Dog extends Thread {
+class Dog implements Callable<Integer> {
     private int coins = 0;
+
     private Hunter owner;
     private Pot currentPot;
+    private Forest forest;
 
-    Dog(Hunter h) {
+    Dog(Hunter h, Forest f) {
         super();
         owner = h;
+        forest = f;
     }
 
+    public Integer call() {
+        enterTheForest();
+        return 0;
+    }
+
+    /**
+     *
+     * @return int
+     */
     int remainingCoinsCapacity() {
         return Config.MAXIMUM_DOG_COINS - coins;
     }
 
+    /**
+     *
+     * @param c -
+     */
     void addCoins(int c) {
         coins += c;
+
+        System.out.printf("%s - received %d coins. Total %d.\n", owner.getTeam(), c, coins);
     }
 
+    /**
+     *
+     * @return Hunter
+     */
     Hunter getOwner() {
         return owner;
     }
 
-    void goSearchForCoins(Forest f) {
+    /**
+     *
+     * @return Dog
+     */
+    Dog cleanDog() {
+        return new Dog(owner, forest);
+    }
+
+    /**
+     *
+     */
+    void enterForestQueue()
+    {
+        System.out.println("Method must be overwritten.");
+    }
+
+    /**
+     *
+     */
+    private void enterTheForest() {
         System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
 
-        currentPot = f.getFirstPot();
+        currentPot = forest.getFirstPot();
         takePotCoins();
     }
 
+    /**
+     *
+     */
     private void takePotCoins() {
         try {
             System.out.printf("%s - Dog trying to take coins from the pot %s.\n", owner.getTeam(), currentPot.getName());
@@ -55,38 +100,59 @@ class Dog extends Thread {
         takePotCoins();
     }
 
+    /**
+     *
+     * @return boolean
+     */
     private boolean isFullOfCoins() {
         return this.coins >= Config.MAXIMUM_DOG_COINS;
     }
 
+    /**
+     *
+     */
     private void deliverCoinsToOwner() {
         System.out.printf("%s - I'm full, going deliver the coins to my owner.\n", owner.getTeam());
 
         owner.addCoins(coins);
         coins = 0;
+
+        enterForestQueue();
     }
 
+    /**
+     *
+     */
     private void goToNextPot() {
-        System.out.printf("%s - Going to the next pot in 1 unit.\n", owner.getTeam());
-
         takeSomeTime(1);
 
         Random r = new Random();
         ArrayList<Pot> relatedPots = currentPot.getRelatedPots();
         currentPot = relatedPots.get(r.nextInt(relatedPots.size()));
+
+        System.out.printf("%s - Going to the pot %s in 1 unit.\n", owner.getTeam(), currentPot.getName());
     }
 
+    /**
+     *
+     */
     private void waitForCoins() {
         System.out.printf("%s - Pot without coins, going sleep for 60 units.\n", owner.getTeam());
 
         takeSomeTime(60);
     }
 
-    private static void takeSomeTime(int i) {
-        try {
-            sleep(i * Config.TIME_UNIT_MILLISECONDS);
-        } catch (InterruptedException e) {
-            System.out.println("Who dares waking me??");
+    /**
+     *
+     * @param i - time units for sleep
+     */
+    private void takeSomeTime(int i) {
+        synchronized (currentPot) {
+            try {
+                currentPot.wait(i * Config.TIME_UNIT_MILLISECONDS);
+            } catch (InterruptedException e) {
+                System.out.printf("Who dares waking the %s dog??\n", owner.getTeam());
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package br.ufsc;
 
+import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class Main {
@@ -16,10 +17,11 @@ public class Main {
             ExecutorService executorService = Executors.newFixedThreadPool(Config.MAXIMUM_PARALLEL_DOGS);
 
             for (int i = 0; i < Config.DOGS_PER_TEAM; i++) {
-                executorService.submit(new Dog(h) {
-                    public void run() {
-                        goSearchForCoins(f);
-                        executorService.submit(this);
+                executorService.submit(new Dog(h, f) {
+                    @Override
+                    public void enterForestQueue() {
+                        executorService.submit(this.cleanDog());
+                        System.out.println("Re-enqueuing the dog.");
                     }
                 });
             }
@@ -28,13 +30,19 @@ public class Main {
         RescueDog redDog = new RescueDog() {
             public void run() {
                 putCoinInEmptyPots(f);
+
+                for(Pot p : f.getPots()) {
+                    synchronized (p) {
+                        p.notifyAll();
+                    }
+                }
             }
         };
 
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        scheduledExecutorService.scheduleAtFixedRate(redDog,0, 2 * Config.TIME_UNIT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(redDog, 0, 2 * Config.TIME_UNIT_MILLISECONDS, TimeUnit.MILLISECONDS);
 
+        // TODO mapear todos os potes da floresta
         // TODO parar quando alguém ganha
-        // TODO acordar os cachorros quando botar moeda
     }
 }
