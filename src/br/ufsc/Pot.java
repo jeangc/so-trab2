@@ -1,4 +1,6 @@
 package br.ufsc;
 
-public class Pot {
+class Pot {
+    private int coins;
+    private Dog[] dogs;
 }

@@ -1,4 +1,9 @@
 package br.ufsc;
 
-public class Hunter {
+class Hunter {
+    private int coins;
+
+    void receiveDogCoins(Dog d) {
+
+    }
 }

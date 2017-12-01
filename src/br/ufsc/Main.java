@@ -13,21 +13,18 @@ public class Main {
             ExecutorService executorService = Executors.newFixedThreadPool(MAXIMUM_PARALLEL_DOGS);
 
             for (int i = 0; i < DOGS_PER_TEAM; i++) {
-                executorService.execute(new Thread() {
+                executorService.execute(new Dog() {
                     public void run() {
                         int j = 0;
-                        try {
-                            while (true) {
-                                System.out.printf("Cachorro %s do time %s\n", this.getName(), t);
-                                sleep(2000);
+                        while (true) {
+                            System.out.printf("Cachorro %s do time %s\n", this.getName(), t);
 
-                                if (++j == 3) {
-                                    executorService.submit(this);
-                                    break;
-                                }
+                            this.waitForCoins();
+
+                            if (++j == 3) {
+                                executorService.submit(this);
+                                break;
                             }
-                        } catch (InterruptedException e) {
-                            //
                         }
                     }
                 });
