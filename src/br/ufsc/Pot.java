@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 class Pot {
+    private String name;
     private int coins = 0;
 
     private Queue<Dog> sleepingDogs;
     private ArrayList<Pot> relatedPots;
 
-    Pot(int c) {
+    Pot(String s, int c) {
+        name = s;
         coins = c;
         relatedPots = new ArrayList<>();
     }
@@ -34,5 +36,9 @@ class Pot {
 
     ArrayList<Pot> getRelatedPots() {
         return relatedPots;
+    }
+
+    String getName() {
+        return name;
     }
 }

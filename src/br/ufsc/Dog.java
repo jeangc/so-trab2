@@ -35,7 +35,7 @@ class Dog extends Thread {
 
     private void takePotCoins() {
         try {
-            System.out.printf("%s - Dog trying to take coins from the pot.\n", owner.getTeam());
+            System.out.printf("%s - Dog trying to take coins from the pot %s.\n", owner.getTeam(), currentPot.getName());
 
             currentPot.transferCoinsToDog(this);
             takeSomeTime(1);
@@ -88,6 +88,5 @@ class Dog extends Thread {
         } catch (InterruptedException e) {
             System.out.println("The dog died asleep. Sad.");
         }
-
     }
 }

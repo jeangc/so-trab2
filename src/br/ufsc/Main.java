@@ -5,8 +5,8 @@ import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) {
-        Pot p2 = new Pot(30);
-        Pot p1 = new Pot(3);
+        Pot p2 = new Pot("Pote 2", 30);
+        Pot p1 = new Pot("Pote 1", 3);
         p1.addRelatedPot(p2);
         p2.addRelatedPot(p1);
 
