@@ -30,7 +30,7 @@ class Pot {
             throw new PotQueueViolationException();
         }
 
-        if(coins == 0) {
+        if(coins < 1) {
             throw new EmptyPotException();
         }
 

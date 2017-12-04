@@ -1,11 +1,9 @@
 package br.ufsc;
 
-import br.ufsc.exception.WinnerException;
-
-import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class Main {
+
     public static void main(String[] args) {
         Pot p2 = new Pot("Pote 2");
         Pot p1 = new Pot("Pote 1");
@@ -23,11 +21,10 @@ public class Main {
                 executorService.submit(new Dog(h) {
                     @Override
                     public void run() {
-                        try {
-                            enterTheForest(f);
+                        enterTheForest(f);
+
+                        if (Config.winner == null) {
                             executorService.submit(this);
-                        } catch (WinnerException e) {
-                            System.out.printf("\n\nCHEGOU %s\n\n", getOwner().getTeam());
                         }
                     }
                 });
@@ -36,6 +33,10 @@ public class Main {
 
         RescueDog redDog = new RescueDog() {
             public void run() {
+                if (Config.winner != null) {
+                    return;
+                }
+
                 putCoinInEmptyPots(f);
 
                 for (Pot p : f.getPots()) {
@@ -46,10 +47,8 @@ public class Main {
             }
         };
 
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(0);
         scheduledExecutorService.scheduleAtFixedRate(redDog, 0, 2 * Config.TIME_UNIT_MILLISECONDS, TimeUnit.MILLISECONDS);
-
         // TODO mapear todos os potes da floresta
-        // TODO parar quando alguém ganha
     }
 }

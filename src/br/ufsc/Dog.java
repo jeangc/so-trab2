@@ -21,7 +21,7 @@ class Dog extends Thread {
     /**
      *
      */
-    void enterTheForest(Forest f) throws WinnerException {
+    void enterTheForest(Forest f) {
         System.out.printf("%s - Dog %s entering the forest.\n", owner.getTeam(), getName());
 
         currentPot = f.getFirstPot();
@@ -57,7 +57,12 @@ class Dog extends Thread {
     /**
      *
      */
-    private void takePotCoins() throws WinnerException {
+    private void takePotCoins() {
+        if (Config.winner != null) {
+            System.out.printf("%s - Stopping because we already has a winner.\n", owner.getTeam());
+            return;
+        }
+
         try {
             System.out.printf("%s - Dog trying to take coins from the pot %s.\n", owner.getTeam(), currentPot.getName());
 
@@ -82,16 +87,22 @@ class Dog extends Thread {
      * @return boolean
      */
     private boolean isFullOfCoins() {
-        return this.coins >= Config.MAXIMUM_DOG_COINS;
+        return coins >= Config.MAXIMUM_DOG_COINS;
     }
 
     /**
      *
      */
-    private void deliverCoinsToOwner() throws WinnerException {
+    private void deliverCoinsToOwner() {
         System.out.printf("%s - I'm full, going deliver the coins to my owner.\n", owner.getTeam());
 
-        owner.addCoins(coins);
+        try {
+            owner.addCoins(coins);
+        } catch (WinnerException e) {
+            Config.winner = owner.getTeam();
+            System.out.printf("\n\nGANHADOR %s\n\n", owner.getTeam());
+        }
+
         coins = 0;
     }
 
