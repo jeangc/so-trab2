@@ -5,6 +5,7 @@ import br.ufsc.exception.PotNotEmptyException;
 import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
 class Pot {
@@ -50,8 +51,8 @@ class Pot {
         coins++;
     }
 
-    void addRelatedPot(Pot p) {
-        this.relatedPots.add(p);
+    void addRelatedPots(Pot[] p) {
+        this.relatedPots.addAll(Arrays.asList(p));
     }
 
     ArrayList<Pot> getRelatedPots() {

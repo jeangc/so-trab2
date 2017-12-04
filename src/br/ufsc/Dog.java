@@ -100,7 +100,6 @@ class Dog extends Thread {
             owner.addCoins(coins);
         } catch (WinnerException e) {
             Config.winner = owner.getTeam();
-            System.out.printf("\n\nGANHADOR %s\n\n", owner.getTeam());
         }
 
         coins = 0;
