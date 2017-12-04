@@ -9,5 +9,5 @@ class Config {
 
     // limits
     static final int MAXIMUM_DOG_COINS = 5;
-    static final int REQUIRED_COINS_WINNER = 50;
+    static final int REQUIRED_COINS_WINNER = 5;
 }

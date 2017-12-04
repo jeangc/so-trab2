@@ -1,5 +1,7 @@
 package br.ufsc;
 
+import br.ufsc.exception.WinnerException;
+
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
@@ -12,6 +14,7 @@ public class Main {
 
         Forest f = new Forest(new Pot[]{p1, p2});
 
+
         for (String t : Config.TEAMS) {
             Hunter h = new Hunter(t);
             ExecutorService executorService = Executors.newFixedThreadPool(Config.MAXIMUM_PARALLEL_DOGS);
@@ -20,9 +23,12 @@ public class Main {
                 executorService.submit(new Dog(h) {
                     @Override
                     public void run() {
-                        enterTheForest(f);
-                        executorService.submit(this);
-                        System.out.println("Re-enqueuing the dog.");
+                        try {
+                            enterTheForest(f);
+                            executorService.submit(this);
+                        } catch (WinnerException e) {
+                            System.out.printf("\n\nCHEGOU %s\n\n", getOwner().getTeam());
+                        }
                     }
                 });
             }
@@ -32,7 +38,7 @@ public class Main {
             public void run() {
                 putCoinInEmptyPots(f);
 
-                for(Pot p : f.getPots()) {
+                for (Pot p : f.getPots()) {
                     synchronized (p) {
                         p.notifyAll();
                     }

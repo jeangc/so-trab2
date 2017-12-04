@@ -1,5 +1,7 @@
 package br.ufsc;
 
+import br.ufsc.exception.WinnerException;
+
 class Hunter {
     private String team;
     private int coins = 0;
@@ -12,11 +14,11 @@ class Hunter {
         return team;
     }
 
-    int getCoins() {
-        return coins;
-    }
-
-    synchronized void addCoins(int c) {
+    synchronized void addCoins(int c) throws WinnerException {
         coins += c;
+
+        if (coins >= Config.REQUIRED_COINS_WINNER) {
+            throw new WinnerException();
+        }
     }
 }

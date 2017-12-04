@@ -2,6 +2,7 @@ package br.ufsc;
 
 import br.ufsc.exception.EmptyPotException;
 import br.ufsc.exception.PotQueueViolationException;
+import br.ufsc.exception.WinnerException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,8 +21,8 @@ class Dog extends Thread {
     /**
      *
      */
-    void enterTheForest(Forest f) {
-        System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
+    void enterTheForest(Forest f) throws WinnerException {
+        System.out.printf("%s - Dog %s entering the forest.\n", owner.getTeam(), getName());
 
         currentPot = f.getFirstPot();
         takePotCoins();
@@ -56,7 +57,7 @@ class Dog extends Thread {
     /**
      *
      */
-    private void takePotCoins() {
+    private void takePotCoins() throws WinnerException {
         try {
             System.out.printf("%s - Dog trying to take coins from the pot %s.\n", owner.getTeam(), currentPot.getName());
 
@@ -87,7 +88,7 @@ class Dog extends Thread {
     /**
      *
      */
-    private void deliverCoinsToOwner() {
+    private void deliverCoinsToOwner() throws WinnerException {
         System.out.printf("%s - I'm full, going deliver the coins to my owner.\n", owner.getTeam());
 
         owner.addCoins(coins);
