@@ -39,8 +39,6 @@ class Pot {
         d.addCoins(transferredCoins);
         coins -= transferredCoins;
         sleepingDogs.remove();
-
-        System.out.printf("%s - Transfering %d coins to the dog, %d remaining.\n", d.getOwner().getTeam(), transferredCoins, coins);
     }
 
     synchronized void incrementCoin() throws PotNotEmptyException {

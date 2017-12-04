@@ -43,7 +43,7 @@ class Dog extends Thread {
     void addCoins(int c) {
         coins += c;
 
-        System.out.printf("%s - received %d coins. Total %d.\n", owner.getTeam(), c, coins);
+        System.out.printf("%s - Received %d coins. Total %d.\n", owner.getTeam(), c, coins);
     }
 
     /**
