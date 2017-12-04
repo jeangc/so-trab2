@@ -48,11 +48,6 @@ class Pot {
         }
 
         coins++;
-
-        for(Dog d: sleepingDogs) {
-            System.out.printf("Trying to wake up the dog %s.\n", d.getName());
-            d.interrupt();
-        }
     }
 
     void addRelatedPot(Pot p) {
