@@ -5,24 +5,26 @@ import br.ufsc.exception.PotQueueViolationException;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.Callable;
 
-class Dog implements Callable<Integer> {
+class Dog extends Thread {
     private int coins = 0;
 
     private Hunter owner;
     private Pot currentPot;
-    private Forest forest;
 
-    Dog(Hunter h, Forest f) {
+    Dog(Hunter h) {
         super();
         owner = h;
-        forest = f;
     }
 
-    public Integer call() {
-        enterTheForest();
-        return 0;
+    /**
+     *
+     */
+    void enterTheForest(Forest f) {
+        System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
+
+        currentPot = f.getFirstPot();
+        takePotCoins();
     }
 
     /**
@@ -49,32 +51,6 @@ class Dog implements Callable<Integer> {
      */
     Hunter getOwner() {
         return owner;
-    }
-
-    /**
-     *
-     * @return Dog
-     */
-    Dog cleanDog() {
-        return new Dog(owner, forest);
-    }
-
-    /**
-     *
-     */
-    void enterForestQueue()
-    {
-        System.out.println("Method must be overwritten.");
-    }
-
-    /**
-     *
-     */
-    private void enterTheForest() {
-        System.out.printf("%s - Dog entering the forest.\n", owner.getTeam());
-
-        currentPot = forest.getFirstPot();
-        takePotCoins();
     }
 
     /**
@@ -116,8 +92,6 @@ class Dog implements Callable<Integer> {
 
         owner.addCoins(coins);
         coins = 0;
-
-        enterForestQueue();
     }
 
     /**

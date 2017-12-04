@@ -17,10 +17,11 @@ public class Main {
             ExecutorService executorService = Executors.newFixedThreadPool(Config.MAXIMUM_PARALLEL_DOGS);
 
             for (int i = 0; i < Config.DOGS_PER_TEAM; i++) {
-                executorService.submit(new Dog(h, f) {
+                executorService.submit(new Dog(h) {
                     @Override
-                    public void enterForestQueue() {
-                        executorService.submit(this.cleanDog());
+                    public void run() {
+                        enterTheForest(f);
+                        executorService.submit(this);
                         System.out.println("Re-enqueuing the dog.");
                     }
                 });
